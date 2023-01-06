@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:kurakaani/pages/login_page.dart';
 import 'package:kurakaani/pages/splash_screen.dart';
+import 'package:kurakaani/router.dart';
 import 'package:kurakaani/utils/color_utils.dart';
 
 void main() async{
@@ -16,13 +18,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:const SplashScreen(),
+      onGenerateRoute: (RouteSettings routeSettings)=>Routers.generateRoute(routeSettings),
+      initialRoute: Routers.splashScreen,
       theme: ThemeData(
         fontFamily: 'OpenSans',
         appBarTheme:  AppBarTheme(
           backgroundColor: ColorUtils.kAppBarColor,
           elevation: 0.0
-        )
+        ),
+        buttonTheme: ButtonThemeData(buttonColor: ColorUtils.kButtonColor)
       ),
     );
   }

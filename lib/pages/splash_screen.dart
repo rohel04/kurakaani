@@ -4,6 +4,7 @@ import 'package:kurakaani/utils/constants.dart';
 import 'package:kurakaani/widgets/tween_image.dart';
 import 'package:kurakaani/widgets/tween_text.dart';
 
+import '../router.dart';
 import '../utils/color_utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,11 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     customTimer();
+
   }
 
   void customTimer() async{
     await Future.delayed(const Duration(seconds: 6));
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+    // Navigator.pushReplacementNamed(context, Routers.loginScreen);
+    Navigator.pushNamedAndRemoveUntil(context, Routers.loginScreen, (route) => false);
   }
 
   @override
