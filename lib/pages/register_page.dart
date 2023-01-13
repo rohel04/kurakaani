@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kurakaani/bloc/authentication_bloc.dart';
 import 'package:kurakaani/utils/color_utils.dart';
 import 'package:kurakaani/utils/form_validation.dart';
@@ -21,7 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _confirmPasswordVisible = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _cPaswordController = TextEditingController();
+  TextEditingController _cPasswordController = TextEditingController();
 
   Future<void> startAuthentication() async {
     bool? validity = _formKey.currentState?.validate();
@@ -38,11 +39,6 @@ class _RegisterPageState extends State<RegisterPage> {
         create: (context) => AuthenticationBloc(),
         child: BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
-            if (state is AuthenticationLoading) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Registration in Process..'),
-                  backgroundColor: Colors.blueAccent));
-            }
             if (state is UserRegistrationSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text('Registration Successful'),
@@ -76,6 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if(value!.isEmpty || !value.contains('@')){
                                   return 'Incorrect Email';
                                 }
+                                return null;
                               },
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -98,6 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if(value!.length<8){
                                   return 'Password must at least be of length 8';
                                 }
+                                return null;
                               },
                               controller: _passwordController,
                               obscureText:
@@ -134,8 +132,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if(value!= _passwordController.text){
                                   return 'Password not matched';
                                 }
+                                return null;
                               },
-                              controller: _cPaswordController,
+                              controller: _cPasswordController,
                               obscureText: _confirmPasswordVisible == true
                                   ? false
                                   : true,
@@ -198,7 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             borderRadius:
                                                 BorderRadius.circular(10))),
                                   ),
-                                  child: const Text('Sign Up'),
+                                  child: state is AuthenticationLoading? SpinKitFadingCircle(color:Colors.white,size: 30,): Text('Sign Up'),
                                 );
                               },
                             ),

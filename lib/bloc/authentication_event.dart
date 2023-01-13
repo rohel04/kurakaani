@@ -1,3 +1,4 @@
+
 part of 'authentication_bloc.dart';
 
 abstract class AuthenticationEvent extends Equatable {
@@ -14,6 +15,19 @@ class RegisterUserEvent extends AuthenticationEvent{
   @override
   // TODO: implement props
   List<Object?> get props =>[email,password];
+
+}
+
+class CompleteProfileEvent extends AuthenticationEvent{
+
+  final String fullName;
+  final File? profilePic;
+
+  CompleteProfileEvent({required this.fullName, this.profilePic});
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [fullName,profilePic];
 
 }
 

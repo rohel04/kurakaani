@@ -53,3 +53,15 @@ class UserLoginFailed extends AuthenticationState{
   List<Object?> get props => [message];
 
 }
+
+class completeProfileSuccess extends AuthenticationState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}class completeProfileFailure extends AuthenticationState{
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}

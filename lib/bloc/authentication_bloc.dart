@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bloc/bloc.dart';
+import 'dart:io';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:kurakaani/models/user_model.dart';
 
 part 'authentication_event.dart';
@@ -19,6 +21,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     });
     on<RegisterUserEvent>((event, emit) async=> await RegisterUser(event,emit));
     on<LoginUserEvent>((event, emit) async=> await LoginUser(event,emit));
+    on<CompleteProfileEvent>((event, emit) async=> await completeUserProfile(event, emit));
   }
 
   Future<void> RegisterUser(RegisterUserEvent event, Emitter<AuthenticationState> emit) async{
@@ -46,10 +49,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> LoginUser(LoginUserEvent event, Emitter<AuthenticationState> emit) async{
     emit(AuthenticationLoading());
     try{
-      UserCredential? userCredentials=await _firebaseAuth.signInWithEmailAndPassword(email: event.email, password: event.password);
-      String uid= userCredentials.user!.uid;
-      DocumentSnapshot userData=await _firebaseFirestore.collection('users').doc(uid).get();
-      UserModel userModel=UserModel.fromMap(userData.data() as Map<String,dynamic>);
+      await _firebaseAuth.signInWithEmailAndPassword(email: event.email, password: event.password);
+      // String uid= userCredentials.user!.uid;
+      // DocumentSnapshot userData=await _firebaseFirestore.collection('users').doc(uid).get();
+      // UserModel userModel=UserModel.fromMap(userData.data() as Map<String,dynamic>);
       emit(UserLoginSuccess());
     }on FirebaseAuthException catch(e){
       switch(e.code){
@@ -60,6 +63,20 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
             emit(UserLoginFailed(message: 'Invalid Credentials !!'));
             break;
       }
+    }
+  }
+
+  Future<void> completeUserProfile(CompleteProfileEvent event,Emitter<AuthenticationState> emit) async{
+    emit(AuthenticationLoading());
+    try{
+      final uid=_firebaseAuth.currentUser!.uid;
+      final email=_firebaseAuth.currentUser!.email;
+      final uploadTask=await FirebaseStorage.instance.ref("Profile_Pictures").child(uid.toString()).putFile(event.profilePic!);
+      String imageUrl=await uploadTask.ref.getDownloadURL();
+      await _firebaseFirestore.collection('users').doc(uid).set({'email':email,'fullname':event.fullName,'profilepic':imageUrl,'uid':uid});
+      emit(completeProfileSuccess());
+    }catch(e){
+      emit(completeProfileFailure());
     }
   }
 }

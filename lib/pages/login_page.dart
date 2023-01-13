@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kurakaani/bloc/authentication_bloc.dart';
 import 'package:kurakaani/utils/color_utils.dart';
@@ -44,12 +45,8 @@ class _LoginPageState extends State<LoginPage> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text('Login Successful'),
                     backgroundColor: Colors.green));
-                Navigator.pushNamedAndRemoveUntil(context, Routers.homeScreen, (route) => false);
               }
-              if (state is AuthenticationLoading) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Logging in..'), backgroundColor: Colors.blue));
-              }
+
             },
             child: SafeArea(
               child: Container(
@@ -73,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                                   if (value!.isEmpty) {
                                     return 'Incorrect Email';
                                   }
+                                  return null;
                                 },
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
@@ -92,9 +90,10 @@ class _LoginPageState extends State<LoginPage> {
                                 controller: _passwordController,
                                 key: ValueKey('password'),
                                 validator: (value){
-                                  if(value!.isEmpty||value!.length<8){
+                                  if(value!.isEmpty||value.length<8){
                                     return 'Password must at least be of length 8';
                                   }
+                                  return null;
                                 },
                                 obscureText:
                                     _passwordVisible == true ? false : true,
@@ -148,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                                               borderRadius:
                                                   BorderRadius.circular(10))),
                                     ),
-                                    child: const Text('Sign In'),
+                                    child: state is AuthenticationLoading? SpinKitFadingCircle(color:Colors.white,size: 30,) :Text('Sign In'),
                                   );
                                 },
                               ),
