@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kurakaani/bloc/authentication_bloc.dart';
 import 'package:kurakaani/router.dart';
+import 'package:kurakaani/utils/form_validation.dart';
 import '../utils/color_utils.dart';
 
 class CompleteProfilePage extends StatefulWidget {
@@ -16,6 +17,8 @@ class CompleteProfilePage extends StatefulWidget {
 }
 
 class _CompleteProfilePageState extends State<CompleteProfilePage> {
+
+  final _formKey=GlobalKey<FormState>();
   File? imageFile;
   TextEditingController _fNameController = TextEditingController();
 
@@ -77,49 +80,38 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 20, horizontal: 50),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        getFromCamera();
-                                                        Navigator.pop(context);
-                                                      },
-                                                      icon: Icon(
-                                                          Icons.camera_alt,
-                                                          color: ColorUtils
-                                                              .kButtonColor,
-                                                          size: 40)),
-                                                  Text(
-                                                    'Camera',
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  )
-                                                ],
+                                            InkWell(
+                                              onTap:()=>getFromCamera(),
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 20, horizontal: 50),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.camera_alt,size: 40),
+                                                    Text(
+                                                      'Camera',
+                                                      style:
+                                                          TextStyle(fontSize: 14,fontWeight: FontWeight.bold),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 20, horizontal: 50),
-                                              child: Column(
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        getFromGallery();
-                                                        Navigator.pop(context);
-                                                      },
-                                                      icon: Icon(Icons.image,
-                                                          color: ColorUtils
-                                                              .kButtonColor,
-                                                          size: 40)),
-                                                  Text('Gallery',
-                                                      style: TextStyle(
-                                                          fontSize: 16))
-                                                ],
+                                            InkWell(
+                                              onTap: ()=>getFromGallery(),
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 20, horizontal: 50),
+                                                child: Column(
+                                                  children: [
+                                                    Icon(Icons.photo,size: 40,),
+                                                    Text('Gallery',
+                                                        style: TextStyle(
+                                                            fontSize: 14,fontWeight: FontWeight.bold))
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -134,10 +126,18 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         )),
                     const SizedBox(height: 50),
                     Form(
+                      key: _formKey,
                         child: Column(
                       children: [
                         TextFormField(
                           controller: _fNameController,
+                          validator: (value){
+                            if(value!.isEmpty){
+                              return 'Please enter FullName';
+                            }
+                            else
+                              return null;
+                          },
                           decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.person,
@@ -154,11 +154,12 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           builder: (context, state) {
                             return ElevatedButton(
                               onPressed: () async {
-                                context.read<AuthenticationBloc>().add(
-                                    CompleteProfileEvent(
-                                        fullName: _fNameController.text,
-                                        profilePic: imageFile));
-                              },
+                                FormValidation.startAuthentication(context, _formKey,CompleteProfileEvent(fullName: _fNameController.text,profilePic: imageFile));
+                                //         profilePic: imageFile));
+                              }, // context.read<AuthenticationBloc>().add(
+                              //     CompleteProfileEvent(
+                              //         fullName: _fNameController.text,
+
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all<double>(5),
                                 backgroundColor:

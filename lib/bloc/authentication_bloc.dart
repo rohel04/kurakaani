@@ -24,6 +24,14 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     on<CompleteProfileEvent>((event, emit) async=> await completeUserProfile(event, emit));
   }
 
+  Stream<User?> get user{
+    return _firebaseAuth.authStateChanges();
+  }
+
+  Future<void> signOut() async{
+    await _firebaseAuth.signOut();
+  }
+
   Future<void> RegisterUser(RegisterUserEvent event, Emitter<AuthenticationState> emit) async{
     emit(AuthenticationLoading());
     try{

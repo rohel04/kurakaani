@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kurakaani/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kurakaani/utils/back_press_func.dart';
 import 'package:kurakaani/utils/color_utils.dart';
 import 'package:kurakaani/utils/constants.dart';
 import 'package:kurakaani/widgets/shimmer_loading.dart';
+import 'package:kurakaani/router.dart';
+import '../bloc/authentication_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,6 +20,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authentication=BlocProvider.of<AuthenticationBloc>(context);
+
     return WillPopScope(
       onWillPop:(){
         return BackPress.onBackPressed(context);
@@ -31,8 +36,9 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: (){
-                      Navigator.pushNamedAndRemoveUntil(context, Routers.loginScreen, (route) => false);
+                    onTap: () async{
+                      await authentication.signOut();
+                      // Navigator.pushNamedAndRemoveUntil(context, Routers.loginScreen, (route) => false);
                     },
                     child: Row(
                       children: [
@@ -60,9 +66,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(onPressed: (){}, icon: Icon(Icons.dark_mode))
           ],
         ),
-        floatingActionButton: FloatingActionButton(onPressed: () {  },
+        floatingActionButton: FloatingActionButton(onPressed: () {
+          Navigator.pushNamed(context, Routers.searchScreen);
+        },
           backgroundColor: ColorUtils.kButtonColor,
-        child:const Icon(Icons.message),
+        child:const Icon(Icons.search),
         ),
         body: SafeArea(
           child: ShimmerLoading.shimmerLoading()

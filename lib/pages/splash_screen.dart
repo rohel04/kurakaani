@@ -26,8 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void customTimer() async{
     await Future.delayed(const Duration(seconds: 6));
-    // Navigator.pushReplacementNamed(context, Routers.loginScreen);
-    Navigator.pushNamedAndRemoveUntil(context, Routers.loginScreen, (route) => false);
+    Navigator.pushNamedAndRemoveUntil(context, Routers.wrapperScreen, (route) => false);
   }
 
   @override
