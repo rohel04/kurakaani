@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kurakaani/pages/chatRoomPage.dart';
 import 'package:kurakaani/pages/complete_profile.dart';
 import 'package:kurakaani/pages/home_page.dart';
 import 'package:kurakaani/pages/login_page.dart';
@@ -12,14 +13,15 @@ class Routers {
   static const homeScreen = '/homeScreen';
   static const loginScreen = '/loginScreen';
   static const registerScreen = '/registerScreen';
-  static const wrapperScreen='/wrapperScreen';
+  static const wrapperScreen = '/wrapperScreen';
   static const completeProfileScreen = '/completeProfileScreen';
   static const searchScreen = 'searchScreen';
+  static const chatRoomScreen = 'chatRoomScreen';
 
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case splashScreen:
-        return MaterialPageRoute(builder: (_)=>const SplashScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case homeScreen:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case loginScreen:
@@ -29,9 +31,11 @@ class Routers {
       case completeProfileScreen:
         return MaterialPageRoute(builder: (_) => const CompleteProfilePage());
       case wrapperScreen:
-        return MaterialPageRoute(builder: (_)=>const Wrapper());
-        case searchScreen:
-        return MaterialPageRoute(builder: (_)=>const SearchPage());
+        return MaterialPageRoute(builder: (_) => const Wrapper());
+      case searchScreen:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+      // case chatRoomScreen:
+      //   return MaterialPageRoute(builder: (_) => const ChatRoomPage());
       default:
         return MaterialPageRoute(builder: (_) => Container());
     }

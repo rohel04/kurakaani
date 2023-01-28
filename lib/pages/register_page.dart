@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:kurakaani/bloc/authentication_bloc.dart';
+import 'package:kurakaani/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:kurakaani/utils/color_utils.dart';
 import 'package:kurakaani/utils/form_validation.dart';
 import 'package:kurakaani/widgets/auth_logo.dart';

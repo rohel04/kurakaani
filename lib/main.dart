@@ -1,13 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kurakaani/bloc/authentication_bloc.dart';
+import 'package:kurakaani/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:kurakaani/pages/login_page.dart';
 import 'package:kurakaani/pages/splash_screen.dart';
 import 'package:kurakaani/router.dart';
 import 'package:kurakaani/utils/color_utils.dart';
+import 'package:uuid/uuid.dart';
+
+import 'bloc/network_bloc/network_bloc.dart';
+var uuid=Uuid();
 
 void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -22,6 +27,7 @@ class MyApp extends StatelessWidget {
 
       providers: [
         BlocProvider<AuthenticationBloc>(create:(context)=>AuthenticationBloc()),
+        BlocProvider<NetworkBloc>(create: (context)=>NetworkBloc())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

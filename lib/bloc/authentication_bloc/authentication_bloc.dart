@@ -13,7 +13,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
 
   FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
-  FirebaseFirestore _firebaseFirestore=FirebaseFirestore.instance;
+  static FirebaseFirestore firebaseFirestore=FirebaseFirestore.instance;
 
   AuthenticationBloc() : super(AuthenticationInitial()) {
     on<AuthenticationEvent>((event, emit) {
@@ -43,7 +43,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         fullName: '',
         profilePic: ''
       );
-      await _firebaseFirestore.collection('users').doc(uid).set(newUser.toMap());
+      await firebaseFirestore.collection('users').doc(uid).set(newUser.toMap());
       emit(UserRegistrationSuccess());
       
     }on FirebaseAuthException catch(e){
@@ -59,7 +59,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try{
       await _firebaseAuth.signInWithEmailAndPassword(email: event.email, password: event.password);
       // String uid= userCredentials.user!.uid;
-      // DocumentSnapshot userData=await _firebaseFirestore.collection('users').doc(uid).get();
+      // DocumentSnapshot userData=await firebaseFirestore.collection('users').doc(uid).get();
       // UserModel userModel=UserModel.fromMap(userData.data() as Map<String,dynamic>);
       emit(UserLoginSuccess());
     }on FirebaseAuthException catch(e){
@@ -81,7 +81,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final email=_firebaseAuth.currentUser!.email;
       final uploadTask=await FirebaseStorage.instance.ref("Profile_Pictures").child(uid.toString()).putFile(event.profilePic!);
       String imageUrl=await uploadTask.ref.getDownloadURL();
-      await _firebaseFirestore.collection('users').doc(uid).set({'email':email,'fullname':event.fullName,'profilepic':imageUrl,'uid':uid});
+      await firebaseFirestore.collection('users').doc(uid).set({'email':email,'fullname':event.fullName,'profilepic':imageUrl,'uid':uid});
       emit(completeProfileSuccess());
     }catch(e){
       emit(completeProfileFailure());

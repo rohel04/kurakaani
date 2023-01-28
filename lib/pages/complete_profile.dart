@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kurakaani/bloc/authentication_bloc.dart';
+import 'package:kurakaani/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:kurakaani/router.dart';
 import 'package:kurakaani/utils/form_validation.dart';
 import '../utils/color_utils.dart';
@@ -61,8 +61,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                                   ))),
                     const SizedBox(height: 20),
                     InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
+                        onTap: () async{
+                          await showModalBottomSheet(
                               context: context,
                               builder: (context) => Container(
                                     padding: EdgeInsets.symmetric(
@@ -81,7 +81,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             InkWell(
-                                              onTap:()=>getFromCamera(),
+                                              onTap:(){
+                              getFromCamera();
+                                Navigator.pop(context);
+                              },
                                               child: Container(
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 20, horizontal: 50),
@@ -100,7 +103,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                                               ),
                                             ),
                                             InkWell(
-                                              onTap: ()=>getFromGallery(),
+                                              onTap: (){
+                                              getFromGallery();
+                                                Navigator.pop(context);
+                                              },
                                               child: Container(
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 20, horizontal: 50),
@@ -119,6 +125,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                                       ],
                                     ),
                                   ));
+
                         },
                         child: const Text(
                           'Click to choose profile picture',
@@ -154,11 +161,9 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           builder: (context, state) {
                             return ElevatedButton(
                               onPressed: () async {
-                                FormValidation.startAuthentication(context, _formKey,CompleteProfileEvent(fullName: _fNameController.text,profilePic: imageFile));
-                                //         profilePic: imageFile));
-                              }, // context.read<AuthenticationBloc>().add(
-                              //     CompleteProfileEvent(
-                              //         fullName: _fNameController.text,
+                                await FormValidation.startAuthentication(context, _formKey,CompleteProfileEvent(fullName: _fNameController.text,profilePic: imageFile));
+
+                              },
 
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all<double>(5),
@@ -196,7 +201,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   Future<void> getFromCamera() async {
     XFile? xFile = await ImagePicker()
-        .pickImage(source: ImageSource.camera, maxHeight: 1500, maxWidth: 1500);
+        .pickImage(source: ImageSource.camera, maxHeight: 1500, maxWidth: 1500,imageQuality: 20);
     if (xFile != null) {
       setState(() {
         imageFile = File(xFile.path);
@@ -206,7 +211,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   Future<void> getFromGallery() async {
     XFile? xFile = await ImagePicker().pickImage(
-        source: ImageSource.gallery, maxHeight: 1500, maxWidth: 1500);
+        source: ImageSource.gallery, maxHeight: 1500, maxWidth: 1500,imageQuality: 20);
     if (xFile != null) {
       setState(() {
         imageFile = File(xFile.path);

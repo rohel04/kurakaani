@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:kurakaani/pages/check_user_page.dart';
 import 'package:kurakaani/pages/home_page.dart';
 import 'package:kurakaani/pages/login_page.dart';
 
-import '../bloc/authentication_bloc.dart';
+import '../bloc/authentication_bloc/authentication_bloc.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _WrapperState extends State<Wrapper> {
         builder: (context,snapshot){
           if(snapshot.connectionState==ConnectionState.active){
             final user=snapshot.data;
-            return user!=null?HomePage():LoginPage();
+            return user!=null?CheckUserPage():LoginPage();
           }
           else{
             return SpinKitFadingCircle(color: Colors.black);
